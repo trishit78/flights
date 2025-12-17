@@ -9,8 +9,11 @@ datasource db {
 
 model airplane {
   id          Int    @id @default(autoincrement())
-  modelNumber String @unique(map: "Airplane_modelNumber_key")
+  modelNumber String @unique()
   capacity    Int    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
 }
 
 model user {
@@ -18,4 +21,13 @@ model user {
   createdAt DateTime @default(now())
   email     String   @unique(map: "User_email_key")
   name      String?
+}
+
+
+model Cities{
+  id   Int    @id @default(autoincrement())
+  city String @unique()
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
 }
