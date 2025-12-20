@@ -7,3 +7,11 @@ export const createFlightRepo = async(flightData:FlightDataDTO)=>{
     });
     return flight;
 }
+
+export const getAllFlightsRepo = async(customFilter:any,sortFilter:any)=>{
+    const flight = await prisma.flight.findMany({
+        where:customFilter,
+        orderBy:sortFilter.length ? sortFilter : undefined
+    });
+    return flight;
+}
