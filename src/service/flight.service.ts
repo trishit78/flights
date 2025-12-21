@@ -32,6 +32,7 @@ export const createFlightService = async (flightData: FlightDataDTO) => {
 };
 
 export const getAllFlightsService = async (query: any) => {
+  console.log(query)
   let customFilter: any = {};
   let sortFilter: any = [];
   if (query.trips) {
