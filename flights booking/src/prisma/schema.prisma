@@ -15,6 +15,7 @@ model airplane {
   updatedAt DateTime @default(now())
 
   flights Flight[]
+  seats Seat[]
 
 }
 
@@ -64,4 +65,24 @@ model Flight{
   price Int
   boardingGate String?
   totalSeats Int
+}
+
+
+model Seat{
+  id Int @id @default(autoincrement())
+  airplaneId Int
+  airplane airplane @relation(fields:[airplaneId],references: [id], onDelete: Cascade)
+  row Int
+  col String
+  type SeatType @default(ECONOMY) 
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+}
+
+
+enum SeatType {
+  BUSINESS
+  ECONOMY
+  PREMIUM_ECONOMY
+  FIRST_CLASS
 }

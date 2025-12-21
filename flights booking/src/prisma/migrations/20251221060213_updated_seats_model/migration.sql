@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `seat` MODIFY `col` VARCHAR(191) NOT NULL;
