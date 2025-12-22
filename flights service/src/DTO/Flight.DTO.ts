@@ -9,3 +9,9 @@ export type FlightDataDTO={
  boardingGate:string,
  totalSeats:number   
 }
+
+export type UpdateFlightDTO = {
+    id:number,
+    seats:number,
+    dec:boolean
+}

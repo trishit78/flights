@@ -1,7 +1,9 @@
-import { FlightDataDTO } from "../DTO/Flight.DTO";
+import { FlightDataDTO, UpdateFlightDTO } from "../DTO/Flight.DTO";
 import {
   createFlightRepo,
   getAllFlightsRepo,
+  getFlightRepo,
+  updateFlightSeatsRepo,
 } from "../repository/flight.repository";
 
 export const createFlightService = async (flightData: FlightDataDTO) => {
@@ -93,3 +95,14 @@ export const getAllFlightsService = async (query: any) => {
     throw new Error("Error in get queried flights service layer");
   }
 };
+
+
+export const getFlightService=async(flightId:number)=>{
+    const flight = await getFlightRepo(flightId);
+    return flight;
+}
+
+export const updateFlightSeatsService = async(flightData:UpdateFlightDTO)=>{
+  const flight = await updateFlightSeatsRepo(flightData);
+  return flight;
+}
