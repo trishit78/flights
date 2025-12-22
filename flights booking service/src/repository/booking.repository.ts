@@ -1,8 +1,9 @@
 import { BookingRepoDataDTO } from "../DTO/booking.DTO";
-import { prisma } from "../prisma/client";
+import { Prisma } from "../generated/prisma/client";
 
-export const bookingRepo = async(bookingData:BookingRepoDataDTO)=>{
-    const booking = await prisma.bookings.create({
+
+export const bookingRepo = async(tx:Prisma.TransactionClient,bookingData:BookingRepoDataDTO)=>{
+    const booking = await tx.bookings.create({
         data:bookingData
     });
     return booking;

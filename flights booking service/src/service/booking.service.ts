@@ -2,6 +2,7 @@ import axios from "axios";
 import { BookingDataDTO } from "../DTO/booking.DTO";
 import { serverConfig } from "../config";
 import { bookingRepo } from "../repository/booking.repository";
+import { prisma } from "../prisma/client";
 
 
 export const createBookingService = async(bookingData:BookingDataDTO)=>{
@@ -18,8 +19,14 @@ export const createBookingService = async(bookingData:BookingDataDTO)=>{
     const price = flight.price;
     const totalCost= noOfSeats*price;
 
-     const booking  = await bookingRepo({flightId,userId,noOfSeats,totalCost});
+    // const booking  = await bookingRepo({flightId,userId,noOfSeats,totalCost});
     
+    const booking  = await prisma.$transaction(async(tx)=>{
+        return bookingRepo(tx,
+            {flightId,userId,noOfSeats,totalCost}
+        )
+    })
+
      try {
         await axios.patch(`${serverConfig.FLIGHT_SERVICE}/api/v1/flight/${bookingData.flightId}/seats`,
             {
