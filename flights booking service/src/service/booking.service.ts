@@ -1,8 +1,9 @@
 import axios from "axios";
-import { BookingDataDTO } from "../DTO/booking.DTO";
+import { BookingDataDTO, PaymentDataDTO } from "../DTO/booking.DTO";
 import { serverConfig } from "../config";
-import { bookingRepo } from "../repository/booking.repository";
+import { bookingRepo, getBookingDetails, updateBookingDetails } from "../repository/booking.repository";
 import { prisma } from "../prisma/client";
+
 
 
 export const createBookingService = async(bookingData:BookingDataDTO)=>{
@@ -39,3 +40,50 @@ export const createBookingService = async(bookingData:BookingDataDTO)=>{
      };
      return booking;
 }
+
+
+
+export const makePaymentService = async(paymentData:PaymentDataDTO)=>{
+    const bookingDetails = await prisma.$transaction(async(tx)=>{
+        return getBookingDetails(tx,paymentData.bookingId);
+    });
+    if(bookingDetails?.status == "CANCELLED"){
+        throw new Error("The booking has expired");
+    }
+    if (!bookingDetails?.createdAt) {
+  throw new Error("bookingDetails or createdAt missing");
+}
+     const bookingTime:any = new Date(bookingDetails.createdAt)
+     const currentTime :any= new Date()
+    if(currentTime - bookingTime>300000)   {
+        await prisma.$transaction(async(tx)=>{
+        return updateBookingDetails(tx,paymentData.bookingId);
+    });
+    throw new Error('The booking has expired');
+    }
+
+    if(bookingDetails.totalCost!=paymentData.totalCost){
+        throw new Error('The amount of payment does not match')
+    }
+
+    if(bookingDetails.userId != paymentData.userId) {
+            throw new Error('The user corresponding to the booking doesnt match');
+        }
+
+        await prisma.$transaction(async(tx)=>{
+        return updateBookingDetails(tx,paymentData.bookingId)
+    });
+
+}
+
+
+
+// const booking = await prisma.$transaction(async (tx) => {
+//   return createBookingRepo(tx, {
+//     flightId: data.flightId,
+//     userId: data.userId,
+//     noOfSeats: data.noOfSeats,
+//     totalCost,
+//     status: "INITIATED"
+//   });
+// });

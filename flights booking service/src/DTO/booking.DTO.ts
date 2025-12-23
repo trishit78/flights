@@ -10,3 +10,10 @@ export type BookingRepoDataDTO = {
     noOfSeats:number,
     totalCost:number
 }
+
+export type PaymentDataDTO = {
+    totalCost:number,
+    userId:number,
+    bookingId:number
+}
+

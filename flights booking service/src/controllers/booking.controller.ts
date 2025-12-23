@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { createBookingService } from "../service/booking.service";
+import { createBookingService, makePaymentService } from "../service/booking.service";
 
 export const createBooking =  async(req:Request,res:Response)=>{
     
@@ -12,3 +12,11 @@ export const createBooking =  async(req:Request,res:Response)=>{
     }) 
 }
 
+export const makePayment = async(req:Request,res:Response)=>{
+    const response = await makePaymentService(req.body);
+    res.status(StatusCodes.OK).json({
+        success:true,
+        message:"Payment done successfully",
+        data:response
+    })
+}
