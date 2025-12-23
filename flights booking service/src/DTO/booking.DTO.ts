@@ -1,3 +1,5 @@
+import { BookingStatus } from "../generated/prisma/enums"
+
 export type BookingDataDTO = {
     flightId:number,
     userId:number,
@@ -17,3 +19,7 @@ export type PaymentDataDTO = {
     bookingId:number
 }
 
+export type UpdateBookingDTO = {
+    bookingId:number,
+    status:BookingStatus   
+}

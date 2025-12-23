@@ -1,4 +1,4 @@
-import { BookingRepoDataDTO } from "../DTO/booking.DTO";
+import { BookingRepoDataDTO, UpdateBookingDTO } from "../DTO/booking.DTO";
 import { Prisma } from "../generated/prisma/client";
 
 
@@ -19,13 +19,13 @@ export const getBookingDetails = async(tx:Prisma.TransactionClient,bookingId:num
     })
 }
 
-export const updateBookingDetails = async(tx:Prisma.TransactionClient,updateBookingData:number)=>{
+export const updateBookingDetails = async(tx:Prisma.TransactionClient,updateBookingData:UpdateBookingDTO)=>{
     return tx.bookings.update({
         where:{
-            id:updateBookingData
+            id:updateBookingData.bookingId
         },
         data:{
-            status:"BOOKED"
+            status:updateBookingData.status
 
         }
     })

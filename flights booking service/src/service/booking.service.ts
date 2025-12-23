@@ -55,9 +55,10 @@ export const makePaymentService = async(paymentData:PaymentDataDTO)=>{
 }
      const bookingTime:any = new Date(bookingDetails.createdAt)
      const currentTime :any= new Date()
+     const bookingId = paymentData.bookingId
     if(currentTime - bookingTime>300000)   {
         await prisma.$transaction(async(tx)=>{
-        return updateBookingDetails(tx,paymentData.bookingId);
+        return updateBookingDetails(tx,{bookingId,status:"CANCELLED"});
     });
     throw new Error('The booking has expired');
     }
@@ -71,7 +72,7 @@ export const makePaymentService = async(paymentData:PaymentDataDTO)=>{
         }
 
         await prisma.$transaction(async(tx)=>{
-        return updateBookingDetails(tx,paymentData.bookingId)
+        return updateBookingDetails(tx,{bookingId,status:"BOOKED"})
     });
 
 }
