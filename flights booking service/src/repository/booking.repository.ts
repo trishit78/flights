@@ -1,5 +1,6 @@
 import { BookingRepoDataDTO, UpdateBookingDTO } from "../DTO/booking.DTO";
-import { Prisma } from "../generated/prisma/client";
+import { BookingStatus, Prisma } from "../generated/prisma/client";
+import { prisma } from "../prisma/client";
 
 
 export const bookingRepo = async(tx:Prisma.TransactionClient,bookingData:BookingRepoDataDTO)=>{
@@ -31,12 +32,18 @@ export const updateBookingDetails = async(tx:Prisma.TransactionClient,updateBook
     })
 }
 
+export const getOldBookingsRepo = async(timestamp:Date)=>{
+    const response = await prisma.bookings.findMany({
+        where:{
+            createdAt:{
+                lt:timestamp
+            },
+            status:{
+                notIn:[BookingStatus.BOOKED,BookingStatus.CANCELLED]
+            }
+        },
+    })
+    return response;
+}
 
 
-
-// export const createBookingRepo = async (
-//   tx: Prisma.TransactionClient,
-//   data: Prisma.BookingCreateInput
-// ) => {
-//   return tx.booking.create({ data });
-// };

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { BookingDataDTO, PaymentDataDTO } from "../DTO/booking.DTO";
 import { serverConfig } from "../config";
-import { bookingRepo, getBookingDetails, updateBookingDetails } from "../repository/booking.repository";
+import { bookingRepo, getBookingDetails, getOldBookingsRepo, updateBookingDetails } from "../repository/booking.repository";
 import { prisma } from "../prisma/client";
 
 
@@ -57,11 +57,9 @@ export const makePaymentService = async(paymentData:PaymentDataDTO)=>{
      const currentTime :any= new Date()
      const bookingId = paymentData.bookingId
     if(currentTime - bookingTime>300000)   {
-        await prisma.$transaction(async(tx)=>{
-        return updateBookingDetails(tx,{bookingId,status:"CANCELLED"});
-    });
-    throw new Error('The booking has expired');
-    }
+        await cancelBooking(paymentData.bookingId)
+    };
+
 
     if(bookingDetails.totalCost!=paymentData.totalCost){
         throw new Error('The amount of payment does not match')
@@ -72,14 +70,58 @@ export const makePaymentService = async(paymentData:PaymentDataDTO)=>{
         }
 
         await prisma.$transaction(async(tx)=>{
-        return updateBookingDetails(tx,{bookingId,status:"BOOKED"})
+        return  updateBookingDetails(tx,{bookingId,status:"BOOKED"})
     });
 
 }
 
 
+export const cancelBooking = async(bookingId:number)=>{
+    const bookingDetails = await prisma.$transaction(async(tx)=>{
+        return getBookingDetails(tx,bookingId)
+    });
+    
+    if(bookingDetails?.status=="CANCELLED"){
+        return true;
+    }
 
-// const booking = await prisma.$transaction(async (tx) => {
+    await axios.patch(`${serverConfig.FLIGHT_SERVICE}/api/v1/flight/${bookingDetails?.flightId}/seats`,{
+        seats:bookingDetails?.noOfSeats,
+        dec:false
+    });
+    await prisma.$transaction(async(tx)=>{
+        return updateBookingDetails(tx,{bookingId,status:"CANCELLED"})
+         });
+}
+
+
+
+export const cancelOldBookings =async ()=>{
+    const time = new Date(Date.now()-1000*600);  // 10 min to make the payment
+    const bookings = await getOldBookingsRepo(time);
+   
+    for(const booking of bookings){
+        try {
+             await axios.patch(`${serverConfig.FLIGHT_SERVICE}/api/v1/flight/${booking?.flightId}/seats`,{
+                seats:booking?.noOfSeats,
+                dec:false
+        });
+            const bookingId = booking.id;
+            
+            await prisma.$transaction(async(tx)=>{
+        return updateBookingDetails(tx,{bookingId,status:"CANCELLED"})
+         });
+
+        } catch (error) {
+            throw new Error('error occured in cancel old bookings')
+        }
+    }
+    
+return true;
+    
+}
+
+
 //   return createBookingRepo(tx, {
 //     flightId: data.flightId,
 //     userId: data.userId,

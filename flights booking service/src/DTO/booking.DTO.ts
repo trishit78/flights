@@ -23,3 +23,8 @@ export type UpdateBookingDTO = {
     bookingId:number,
     status:BookingStatus   
 }
+
+export type cancelBookingDTO = {
+    bookingId:number,
+    status:BookingStatus
+}
