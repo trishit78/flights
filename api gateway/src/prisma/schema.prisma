@@ -20,4 +20,38 @@ model User{
   password String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+
+  roles UserRole[]
+}
+
+
+model Role{
+  id Int @id @default(autoincrement())
+  name ROLE @default(CUSTOMER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  users UserRole[]
+}
+
+enum ROLE{
+  ADMIN
+  CUSTOMER
+  FLIGHT_COMPANY
+}
+
+model UserRole{
+  id Int @id @default(autoincrement())
+  userId Int
+  user User @relation(fields:[userId],references: [id],onDelete: Cascade)
+  roleId Int
+  role Role @relation(fields:[roleId],references: [id],onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) 
+  
+  
+  @@unique([userId, roleId])
+  @@map("User_Roles")
+
 }
