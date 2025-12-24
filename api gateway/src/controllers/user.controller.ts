@@ -1,5 +1,5 @@
 import {type Request,type Response} from 'express';
-import { signInService, signUpService } from '../services/user.service.js';
+import { addRolesToUserService, signInService, signUpService } from '../services/user.service.js';
 
 
 export const signUpHandler = async(req:Request,res:Response)=>{
@@ -22,14 +22,12 @@ export const signUpHandler = async(req:Request,res:Response)=>{
 
 }
 
-
-
 export const signInHandler = async(req:Request,res:Response)=>{
    try {
         const response = await signInService(req.body);
         res.status(200).json({
             success:true,
-            message:"User successfully signed in",
+            message:"User roles changed successfully",
             data:response            
         });
     } catch (error:unknown) {
@@ -41,4 +39,25 @@ export const signInHandler = async(req:Request,res:Response)=>{
             });
         }
     }
+}
+
+export const addRolesToUser = async(req:Request,res:Response)=>{
+    try {
+        console.log('added roles to users')
+    const response = await addRolesToUserService(req.body);
+     res.status(200).json({
+            success:true,
+            message:"User successfully signed up",
+            data:response            
+        });
+        
+     } catch (error:unknown) {
+        if(error instanceof Error){
+            res.status(500).json({
+                success: false,
+                message: "Internal server error",
+                data:error.message
+            });
+        }
+}
 }

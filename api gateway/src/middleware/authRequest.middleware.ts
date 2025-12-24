@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { isAuthenticated } from "../services/user.service.js";
+import { isAdmin, isAuthenticated } from "../services/user.service.js";
 
 export const authRequest = async (
   req: Request,
@@ -32,7 +32,7 @@ if (!response) {
     message: 'Unauthorized'
   });
 }
-    req.user = response;
+    req.user = {id:response}
     next();
 
 } catch (error) {
@@ -43,3 +43,20 @@ if (!response) {
       });
   }
 };
+
+
+export const checkIsAdmin = async(req:Request,res:Response,next:NextFunction)=>{
+     if (!req.user) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "Unauthenticated"
+      });
+    }
+  
+  const response =await isAdmin(req.user.id);
+   if(!response) {
+        return res
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({message: 'User not authorized for this action'});
+    }
+    next();
+}

@@ -1,9 +1,11 @@
 import bcrypt from "bcryptjs";
-import type { signInDTO, signUpDTO } from "../DTO/user.DTO.js";
-import { getUserByEmail, getUserById, signUpRepo } from "../repository/user.repository.js";
+import type { signInDTO, signUpDTO, userDataDTO } from "../DTO/user.DTO.js";
+import { addRoleToUserRepo, getUserByEmail, getUserById, signUpRepo } from "../repository/user.repository.js";
 import { comparePassword, createToken } from "../utils/auth.js";
 import jwt from 'jsonwebtoken';
 import { serverConfig } from "../config/index.js";
+import { prisma } from "../prisma/client.js";
+import { ROLE } from "../generated/prisma/enums.js";
 
 export const signUpService = async(signUpData:signUpDTO)=>{
     try {
@@ -68,5 +70,40 @@ export const isAuthenticated = async(token:string)=>{
             throw error;
         }
         throw new Error('Internal Server Error in auth middleware');
+    }
+}
+
+export const addRolesToUserService = async(userData:userDataDTO)=>{
+    try {
+        const user = await addRoleToUserRepo(userData);
+        return user;
+    } catch (error) {
+        throw new Error('error occured while adding roles to user in service layer')   
+    }
+}
+
+
+export const isAdmin = async(id:number)=>{
+    try {
+        const user = await getUserById(id);
+        if(!user){
+            throw new Error('no user found with this userID');
+        }       
+        console.log('userID',user.id)
+        const hasAdminRole = await prisma.userRole.findFirst({
+            where:{
+                userId:user.id,
+                role:{
+                    name:ROLE.ADMIN
+                }
+            }
+        });
+        if(!hasAdminRole){
+            throw new Error('user does not have admin role');
+        }
+        
+        return hasAdminRole
+    } catch (error) {
+          if(error instanceof Error) throw error;
     }
 }
