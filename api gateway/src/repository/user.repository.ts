@@ -25,3 +25,16 @@ export const getUserByEmail = async(signInData:signInDTO)=>{
         throw new Error('Error occured in sign in repo')
     }
 }
+
+export const getUserById = async(userId:number)=>{
+    try {
+        const user = await prisma.user.findUnique({
+            where:{
+                id:userId
+            }
+        })
+        return user
+     } catch (error) {
+        throw new Error('Error occured in sign in repo')
+    }
+}
