@@ -3,6 +3,18 @@ import { StatusCodes } from "http-status-codes";
 import { createBookingService, makePaymentService } from "../service/booking.service";
 
 export const createBooking =  async(req:Request,res:Response)=>{
+// if (!req.user) {
+//      res.status(401).json({
+//       success: false,
+//       message: 'Unauthorized'
+//     });
+//   }
+
+//   const bookingData = {
+//     ...req.body,
+//     userId: (req.user as any).id   
+//   };
+
     const response = await createBookingService(req.body);
     res.status(StatusCodes.CREATED).json({
         success:true,

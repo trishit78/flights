@@ -6,6 +6,8 @@ import { appErrorHandler, genericErrorHandler } from './middlewares/error.middle
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
 import { scheduleCrons } from './utils/cronJob';
+//import { attachUserContext } from './middlewares/context.middleware';
+
 const app = express();
 
 app.use(express.json());
@@ -15,6 +17,7 @@ app.use(express.json());
  */
 
 app.use(attachCorrelationIdMiddleware);
+//app.use(attachUserContext)
 app.use('/api/v1', v1Router);
 app.use('/api/v2', v2Router); 
 
