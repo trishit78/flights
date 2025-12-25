@@ -3,7 +3,9 @@ import dotenv from 'dotenv';
 
 type ServerConfig = {
     PORT: number,
-    FLIGHT_SERVICE:string
+    FLIGHT_SERVICE:string,
+    REDIS_PORT:number,
+    REDIS_HOST:string
 }
 
 function loadEnv() {
@@ -15,6 +17,8 @@ loadEnv();
 
 export const serverConfig: ServerConfig = {
     PORT: Number(process.env.PORT) || 3001,
-    FLIGHT_SERVICE:process.env.FLIGHT_SERVICE || "http://localhost:3000"
+    FLIGHT_SERVICE:process.env.FLIGHT_SERVICE || "http://localhost:3000",
+    REDIS_PORT:Number(process.env.REDIS_PORT) || 6379,
+    REDIS_HOST:process.env.REDIS_HOST || 'localhost',
 
 };

@@ -71,7 +71,7 @@ export const makePaymentService = async(paymentData:PaymentDataDTO)=>{
 
         await prisma.$transaction(async(tx)=>{
         return  updateBookingDetails(tx,{bookingId,status:"BOOKED"})
-    });
+    });//here add mail
 
 }
 
