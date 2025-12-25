@@ -3,6 +3,9 @@ import { Job, Worker } from "bullmq";
 
 import { getRedisConnObject } from "../config/redis.config";
 import { NotificationDTO } from "../DTO/notification.DTO";
+import { renderMailTemplate } from "../template/template.handler";
+import logger from "../config/logger.config";
+import { sendEmail } from "../service/mailer.service";
 
 
 
@@ -23,6 +26,12 @@ export const setupMailerWorker = () => {
             // call the service layer from here.
             const payload = job.data;
             console.log(`Processing email for: ${JSON.stringify(payload)}`);
+
+            const emailContent =  await renderMailTemplate(payload.templateId,payload.params);
+await sendEmail(payload.to, payload.subject,emailContent );
+            
+             logger.info(`Email sent to ${payload.to} with subject  ${payload.subject}`);
+
 
         }, // Process function
         {

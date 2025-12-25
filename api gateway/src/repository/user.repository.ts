@@ -4,6 +4,7 @@ import { prisma } from "../prisma/client.js";
 
 export const signUpRepo = async(signUpData:signUpDTO)=>{
    try {
+    console.log('signupdata',signUpData);
         const user = await prisma.user.create({
         data:signUpData
     })
@@ -22,6 +23,7 @@ export const signUpRepo = async(signUpData:signUpDTO)=>{
           roleId: customerRole.id
         }
       });
+      console.log('user',user);
     return user;       
     } catch (error) {
         throw new Error('Error occured in sign up repo')
@@ -92,6 +94,5 @@ export const getUserByIdRepo = async(id:number)=>{
             id:id
         }
     });
-    console.log(user?.email)
-    return user?.email;
+    return user;
 }

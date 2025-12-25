@@ -61,7 +61,7 @@ export const addRolesToUser = async(req:Request,res:Response)=>{
 }
 }
 
-export const getUserEmailById = async(req:Request,res:Response)=>{
+export const getUserById = async(req:Request,res:Response)=>{
     try {
          const id = Number(req.params.id)
          if(!id){

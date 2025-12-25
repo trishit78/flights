@@ -1,6 +1,7 @@
 import type { ROLE } from "../generated/prisma/enums.js"
 
 export type signUpDTO={
+    name:string,
     email:string,
     password:string
 }

@@ -80,13 +80,12 @@ export const makePaymentService = async(paymentData:PaymentDataDTO)=>{
   `${serverConfig.API_GATEWAY}/api/v1/${paymentData.userId}`
 );
 
-
         addEmailToQueue({
-            to: userData.data.data,
+            to: userData.data.data.email,
             subject: "test booking",
             templateId: "welcome",
             params: {
-                name: userData.data.data,
+                name: userData.data.data.name,
                 appName: "flight booking",
             }
         })
