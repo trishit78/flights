@@ -7,16 +7,27 @@ import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
 import { scheduleCrons } from './utils/cronJob';
 
+import {createBullBoard} from '@bull-board/api';
+import {BullMQAdapter} from '@bull-board/api/bullMQAdapter';
+import {ExpressAdapter} from '@bull-board/express';
+import { mailerQueue } from './queue/mailer.queue';
 //import { attachUserContext } from './middlewares/context.middleware';
 
 const app = express();
+
+const bullServerAdapter = new ExpressAdapter();
+bullServerAdapter.setBasePath('/ui');
+createBullBoard({
+    queues:[new BullMQAdapter(mailerQueue)],
+    serverAdapter:bullServerAdapter
+})
 
 app.use(express.json());
 
 /**
  * Registering all the routers and their corresponding routes with out app server object.
  */
-
+app.use('/ui',bullServerAdapter.getRouter());
 app.use(attachCorrelationIdMiddleware);
 //app.use(attachUserContext)
 app.use('/api/v1', v1Router);

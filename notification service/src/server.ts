@@ -6,7 +6,12 @@ import { appErrorHandler, genericErrorHandler } from './middlewares/error.middle
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
 import { setupMailerWorker } from './processor/mailer.processor';
+
+
+
+
 const app = express();
+
 
 app.use(express.json());
 
