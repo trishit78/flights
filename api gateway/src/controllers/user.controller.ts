@@ -1,5 +1,5 @@
 import {type Request,type Response} from 'express';
-import { addRolesToUserService, signInService, signUpService } from '../services/user.service.js';
+import { addRolesToUserService, getUserByIdService, signInService, signUpService } from '../services/user.service.js';
 
 
 export const signUpHandler = async(req:Request,res:Response)=>{
@@ -43,7 +43,6 @@ export const signInHandler = async(req:Request,res:Response)=>{
 
 export const addRolesToUser = async(req:Request,res:Response)=>{
     try {
-        console.log('added roles to users')
     const response = await addRolesToUserService(req.body);
      res.status(200).json({
             success:true,
@@ -51,6 +50,29 @@ export const addRolesToUser = async(req:Request,res:Response)=>{
             data:response            
         });
         
+     } catch (error:unknown) {
+        if(error instanceof Error){
+            res.status(500).json({
+                success: false,
+                message: "Internal server error",
+                data:error.message
+            });
+        }
+}
+}
+
+export const getUserEmailById = async(req:Request,res:Response)=>{
+    try {
+         const id = Number(req.params.id)
+         if(!id){
+            throw new Error('id not found')
+         }
+         const response = await getUserByIdService(id);
+     res.status(200).json({
+            success:true,
+            message:"User successfully signed up",
+            data:response            
+        });
      } catch (error:unknown) {
         if(error instanceof Error){
             res.status(500).json({

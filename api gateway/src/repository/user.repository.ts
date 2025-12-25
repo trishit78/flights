@@ -85,3 +85,13 @@ console.log('user role',userRole)
           throw new Error('Error occured in sign up repo')
     }
 }
+
+export const getUserByIdRepo = async(id:number)=>{
+    const user = await prisma.user.findUnique({
+        where:{
+            id:id
+        }
+    });
+    console.log(user?.email)
+    return user?.email;
+}

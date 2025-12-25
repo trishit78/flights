@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import type { signInDTO, signUpDTO, userDataDTO } from "../DTO/user.DTO.js";
-import { addRoleToUserRepo, getUserByEmail, getUserById, signUpRepo } from "../repository/user.repository.js";
+import { addRoleToUserRepo, getUserByEmail, getUserById, getUserByIdRepo, signUpRepo } from "../repository/user.repository.js";
 import { comparePassword, createToken } from "../utils/auth.js";
 import jwt from 'jsonwebtoken';
 import { serverConfig } from "../config/index.js";
@@ -105,5 +105,14 @@ export const isAdmin = async(id:number)=>{
         return hasAdminRole
     } catch (error) {
           if(error instanceof Error) throw error;
+    }
+}
+
+export const getUserByIdService = async(id:number)=>{
+     try {
+        const user = await getUserByIdRepo(id);
+        return user;
+    } catch (error) {
+        throw new Error('error occured while getting user email in service layer')   
     }
 }

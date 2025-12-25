@@ -3,6 +3,7 @@ import { BookingDataDTO, PaymentDataDTO } from "../DTO/booking.DTO";
 import { serverConfig } from "../config";
 import { bookingRepo, getBookingDetails, getOldBookingsRepo, updateBookingDetails } from "../repository/booking.repository";
 import { prisma } from "../prisma/client";
+import { addEmailToQueue } from "../producer/mailer.producer";
 
 
 
@@ -71,7 +72,25 @@ export const makePaymentService = async(paymentData:PaymentDataDTO)=>{
 
         await prisma.$transaction(async(tx)=>{
         return  updateBookingDetails(tx,{bookingId,status:"BOOKED"})
-    });//here add mail
+    });
+    
+    //here add mail    
+   
+         const userData = await axios.get(
+  `${serverConfig.API_GATEWAY}/api/v1/${paymentData.userId}`
+);
+
+
+        addEmailToQueue({
+            to: userData.data.data,
+            subject: "test booking",
+            templateId: "welcome",
+            params: {
+                name: userData.data.data,
+                appName: "flight booking",
+            }
+        })
+    
 
 }
 
