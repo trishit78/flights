@@ -6,7 +6,8 @@ type ServerConfig = {
     FLIGHT_SERVICE:string,
     API_GATEWAY:string,
     REDIS_PORT:number,
-    REDIS_HOST:string
+    REDIS_HOST:string,
+    JWT_SECRET:string
 }
 
 function loadEnv() {
@@ -22,5 +23,5 @@ export const serverConfig: ServerConfig = {
     API_GATEWAY:process.env.API_GATEWAY || "http://localhost:5000",
     REDIS_PORT:Number(process.env.REDIS_PORT) || 6379,
     REDIS_HOST:process.env.REDIS_HOST || 'localhost',
-
+    JWT_SECRET:process.env.JWT_SECRET || 'trishit'
 };

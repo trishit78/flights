@@ -1,3 +1,4 @@
+/// <reference path="./types/express.d.ts" />
 import express from 'express';
 import { serverConfig } from './config';
 import v1Router from './routers/v1/index.router';
@@ -11,7 +12,7 @@ import {createBullBoard} from '@bull-board/api';
 import {BullMQAdapter} from '@bull-board/api/bullMQAdapter';
 import {ExpressAdapter} from '@bull-board/express';
 import { mailerQueue } from './queue/mailer.queue';
-//import { attachUserContext } from './middlewares/context.middleware';
+import { attachUserContext } from './middlewares/context.middleware';
 
 const app = express();
 
@@ -29,7 +30,7 @@ app.use(express.json());
  */
 app.use('/ui',bullServerAdapter.getRouter());
 app.use(attachCorrelationIdMiddleware);
-//app.use(attachUserContext)
+app.use(attachUserContext)
 app.use('/api/v1', v1Router);
 app.use('/api/v2', v2Router); 
 

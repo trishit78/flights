@@ -1,0 +1,37 @@
+docs(auth): document end-to-end authentication flow from API Gateway to Booking Service
+
+This commit adds a detailed walkthrough of how user authentication is handled
+across the system, from the API Gateway down to the Booking Service.
+
+Flow summary:
+
+1) API Gateway (src/index.ts)
+- All requests enter via port 5000.
+- Requests targeting /bookingService are passed through the authRequest
+  middleware before being proxied.
+- authRequest acts as the first line of authentication enforcement.
+
+2) Gateway Authentication Middleware (authRequest.middleware.ts)
+- Validates presence and format of the Authorization header.
+- Verifies the JWT using jwt.verify and the shared JWT_SECRET.
+- Extracts the user ID from the token payload.
+- Attaches the user ID to req.user.
+- Calls next() to allow the request to be proxied.
+- NOTE: x-user-id forwarding via onProxyReq is currently commented out, so
+  downstream services do NOT receive this header.
+
+3) Booking Service Context Middleware (context.middleware.ts)
+- Every request is intercepted on port 4000.
+- Attempts to read x-user-id from headers (currently undefined due to gateway config).
+- Falls back to Authorization header if x-user-id is missing.
+- Re-verifies the JWT locally using the same JWT_SECRET.
+- Extracts the user ID and attaches it to req.user.
+- Ensures controllers always receive a populated user context.
+
+Key takeaway:
+- Authentication is enforced at the gateway, but the Booking Service is resilient
+  and independently verifies the JWT as a fallback.
+- This creates a redundant but reliable authentication layer, even without
+  explicit user context forwarding from the gateway.
+
+No functional changes introduced — documentation and clarity only.

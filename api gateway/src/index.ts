@@ -29,17 +29,17 @@ const bookingProxyOptions:proxy.Options & { target: string ,changeOrigin:boolean
   changeOrigin: true,
   pathRewrite: {
     '^/bookingService': '/'
-  },
-   onProxyReq(proxyReq: any, req: any) {
-    if (req.user) {
-      proxyReq.setHeader('x-user-id', String(req.user));
-    }
   }
+  //  onProxyReq(proxyReq: any, req: any) {
+  //   if (req.user) {
+  //     proxyReq.setHeader('x-user-id', String(req.user.id));
+  //   }
+  // }
 } as any;
 
 
 app.use(
-  '/bookingService',
+  '/bookingService',authRequest,
   proxy.createProxyMiddleware(bookingProxyOptions),
   
 );

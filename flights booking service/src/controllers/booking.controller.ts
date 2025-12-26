@@ -2,20 +2,29 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { createBookingService, makePaymentService } from "../service/booking.service";
 
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: number;
+  };
+}
+
 export const createBooking =  async(req:Request,res:Response)=>{
-// if (!req.user) {
-//      res.status(401).json({
-//       success: false,
-//       message: 'Unauthorized'
-//     });
-//   }
 
-//   const bookingData = {
-//     ...req.body,
-//     userId: (req.user as any).id   
-//   };
+  const authReq = req as AuthenticatedRequest;
+  if (!authReq.user) {
+      res.status(401).json({
+       success: false,
+       message: 'Unauthorized'
+     });
+     return;
+  }
 
-    const response = await createBookingService(req.body);
+  const bookingData = {
+    ...req.body,
+    userId: authReq.user.id   
+  };
+  
+  const response = await createBookingService(bookingData);
     res.status(StatusCodes.CREATED).json({
         success:true,
         message:"Booking Initiated Successfully",
@@ -41,7 +50,22 @@ export const makePayment = async (req:Request, res:Response) => {
     return;
   }
 
-  const response = await makePaymentService(req.body);
+
+  
+  const authReq = req as AuthenticatedRequest;
+  if (!authReq.user) {
+      res.status(401).json({
+       success: false,
+       message: 'Unauthorized'
+     });
+     return;
+  }
+
+  const paymentData = {
+    ...req.body,
+    userId: authReq.user.id   
+  };
+  const response = await makePaymentService(paymentData);
 
   inMemDb[idempotencyKey] = true;
 
