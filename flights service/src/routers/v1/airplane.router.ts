@@ -1,15 +1,16 @@
 import express from 'express';
 import { createAirplaneHandler, deleteAirplaneHandler, getAirplaneHandler, getAllAirplaneHandler, updateAirplaneHandler } from '../../controllers/airplane.controller';
 
-import { validateCreateAirplane } from '../../middlewares/airplane.middleware';
+import {  validateRequestBody, validateUrlParams } from '../../validators';
+import { airplaneByIdSchema, airplaneSchema } from '../../validators/airplaneSchema';
 
 
 const airplaneRouter = express.Router();
 
-airplaneRouter.post('/',validateCreateAirplane,createAirplaneHandler);
+airplaneRouter.post('/',validateRequestBody(airplaneSchema),createAirplaneHandler);
 airplaneRouter.get('/',getAllAirplaneHandler);
-airplaneRouter.get('/:id',getAirplaneHandler);
-airplaneRouter.put('/',updateAirplaneHandler);
-airplaneRouter.delete('/:id',deleteAirplaneHandler);
+airplaneRouter.get('/:id',validateUrlParams(airplaneByIdSchema),getAirplaneHandler);
+airplaneRouter.put('/',validateRequestBody(airplaneSchema),updateAirplaneHandler);
+airplaneRouter.delete('/:id',validateUrlParams(airplaneByIdSchema),deleteAirplaneHandler);
 
 export default airplaneRouter;

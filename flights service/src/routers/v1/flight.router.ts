@@ -1,13 +1,15 @@
 import express from 'express';
+import { createFlightSchema, flightByIdSchema, updateFlightSeatsSchema } from '../../validators/flightSchema';
+import { validateRequestBody, validateUrlParams } from '../../validators';
 import { createFlightHandler, getAllFlights, getFlights, updateFlightSeats } from '../../controllers/flight.controller';
 
 
 const flightRouter = express.Router();
 
-flightRouter.post('/',createFlightHandler);
+flightRouter.post('/',validateRequestBody(createFlightSchema),createFlightHandler);
 flightRouter.get('/',getAllFlights);
-flightRouter.get('/:id',getFlights);
-flightRouter.patch('/:id/seats',updateFlightSeats);
+flightRouter.get('/:id',validateUrlParams(flightByIdSchema),getFlights);
+flightRouter.patch('/:id/seats',validateUrlParams(flightByIdSchema),validateRequestBody(updateFlightSeatsSchema),updateFlightSeats);
 
 
 
