@@ -1,12 +1,11 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Plane, Search, Calendar, MapPin } from "lucide-react";
-// import Link from "next/link";
+import { Search, Calendar, MapPin, ArrowRightLeft, User, ChevronDown, Circle, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   const router = useRouter();
@@ -18,102 +17,120 @@ export default function Home() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Redirect to flights page with query params (or just all flights for now if empty)
     const query = new URLSearchParams(searchParams).toString();
     router.push(`/flights?${query}`);
   };
 
+  
   return (
-    <div className="flex flex-col min-h-[calc(100vh-4rem)]">
-      {/* Hero Section */}
-      <section className="relative flex items-center justify-center h-[600px] border-b border-border/40 bg-background overflow-hidden px-4">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
-        <div className="absolute inset-0 flex items-center justify-center bg-background [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
-        
-        <div className="relative z-10 w-full max-w-5xl space-y-8 text-center">
-          <div className="space-y-4">
-             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl bg-clip-text text-transparent bg-gradient-to-b from-white to-white/70">
-              Discover Your Next <br /> <span className="text-primary">Adventure</span>
-            </h1>
-            <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-              Seamlessly book flights to destinations around the globe. Experience travel like never before.
-            </p>
-          </div>
+    <div className="h-[calc(100vh-4rem)] bg-white flex flex-col items-center font-sans overflow-hidden">
+      
+      {/* Hero Section - Exact Layout Match */}
+      <div className="w-full flex justify-center pt-[64px] pb-[10px] items-end relative">
+         <div className="flex flex-col items-center justify-end relative w-[1200px]">
+            {/* Image Container */}
+            <div 
+                role="presentation"
+                className="w-full h-[320px] md:h-[320px] bg-contain bg-center bg-no-repeat mb-2"
+                style={{
+                    backgroundImage: `url(https://www.gstatic.com/travel-frontend/animation/hero/flights_nc_4.svg)`
+                }}
+            />
+            {/* Flights Title Div */}
+            <div className="absolute bottom-[0px] left-1/2 transform -translate-x-1/2 text-[56px] leading-[64px] font-normal text-black text-center">
+                Flights
+            </div>
+         </div>
+      </div>
 
-          <Card className="mx-auto max-w-3xl bg-card/50 backdrop-blur-sm border-border">
-            <CardContent className="p-6">
-              <form onSubmit={handleSearch} className="grid gap-4 md:grid-cols-4 items-end">
-                <div className="space-y-2 text-left">
-                  <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">From</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      className="pl-9" 
-                      placeholder="Origin" 
-                      value={searchParams.from}
-                      onChange={(e) => setSearchParams({...searchParams, from: e.target.value})}
-                    />
-                  </div>
+      {/* Search Box Container */}
+      <div className="w-full max-w-[1024px] px-4 md:px-6 relative z-20 mt-8 mb-16">
+        <div className="bg-white text-gray-900 rounded-[8px] shadow-[0_1px_3px_0_rgba(60,64,67,0.3),0_4px_8px_3px_rgba(60,64,67,0.15)] p-[6px] pb-12 relative">
+            
+            {/* Top Controls Row */}
+            <div className="flex items-center gap-2 mb-4 px-1 py-2 text-sm font-medium text-gray-600">
+                <div className="flex items-center gap-1 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded transition-colors text-gray-900">
+                    <ArrowRight name="arrow-right" className="w-4 h-4" />
+                    <span>One way</span>
+                    <ChevronDown className="w-3 h-3" />
                 </div>
-                <div className="space-y-2 text-left">
-                   <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">To</label>
-                   <div className="relative">
-                    <MapPin className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      className="pl-9" 
-                      placeholder="Destination" 
-                      value={searchParams.to}
-                      onChange={(e) => setSearchParams({...searchParams, to: e.target.value})}
-                    />
-                   </div>
+                <div className="flex items-center gap-1 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded transition-colors text-gray-900">
+                    <User className="w-4 h-4" />
+                    <span>1</span>
+                    <ChevronDown className="w-3 h-3" />
                 </div>
-                <div className="space-y-2 text-left">
-                   <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Date</label>
-                   <div className="relative">
-                    <Calendar className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      type="date" 
-                      className="pl-9" 
-                      value={searchParams.date}
-                      onChange={(e) => setSearchParams({...searchParams, date: e.target.value})}
-                    />
-                   </div>
+                <div className="flex items-center gap-1 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded transition-colors text-gray-900">
+                    <span>Economy</span>
+                    <ChevronDown className="w-3 h-3" />
                 </div>
-                <Button type="submit" size="lg" className="w-full">
-                  <Search className="mr-2 h-4 w-4" /> Search
+            </div>
+
+            {/* Inputs Container */}
+            <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4 relative">
+                
+                {/* Origin */}
+                <div className="flex-1 relative flex items-center border border-gray-300 rounded-[4px] hover:border-gray-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-white transition-colors h-14">
+                    <div className="absolute left-4 z-10">
+                        <Circle className="w-4 h-4 text-gray-500" />
+                    </div>
+                    <Input 
+                        className="pl-12 h-full border-none rounded-[4px] focus-visible:ring-0 text-base bg-transparent truncate text-gray-900 placeholder:text-gray-500"
+                        placeholder="Where from?"
+                        value={searchParams.from}
+                        onChange={(e) => setSearchParams({...searchParams, from: e.target.value})}
+                    />
+                </div>
+
+                {/* Swap Button (Absolute positioned between inputs) */}
+                <div className="absolute left-[33%] top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hidden md:flex">
+                     <div className="bg-white border border-gray-300 rounded-full p-2 cursor-pointer hover:bg-gray-50 hover:shadow-sm transition-all shadow-[0_1px_2px_0_rgba(60,64,67,0.3)]">
+                        <ArrowRightLeft className="w-4 h-4 text-blue-600" />
+                     </div>
+                </div>
+
+                {/* Destination */}
+                <div className="flex-1 relative flex items-center border border-gray-300 rounded-[4px] hover:border-gray-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-white transition-colors h-14">
+                    <div className="absolute left-4 z-10">
+                        <MapPin className="w-4 h-4 text-gray-500" />
+                    </div>
+                    <Input 
+                        className="pl-12 h-full border-none rounded-[4px] focus-visible:ring-0 text-base bg-transparent truncate text-gray-900 placeholder:text-gray-500"
+                        placeholder="Where to?"
+                        value={searchParams.to}
+                        onChange={(e) => setSearchParams({...searchParams, to: e.target.value})}
+                    />
+                </div>
+
+                {/* Date Group - Single Box for Departure */}
+                <div className="flex-1 relative flex items-center border border-gray-300 rounded-[4px] hover:border-gray-400 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 bg-white transition-colors h-14">
+                    <div className="absolute left-4 z-10">
+                        <Calendar className="w-4 h-4 text-gray-500" />
+                    </div>
+                    <Input 
+                        type="text"
+                        onFocus={(e) => e.target.type = 'date'}
+                        onBlur={(e) => e.target.type = 'text'}
+                        className="pl-12 h-full border-none rounded-[4px] focus-visible:ring-0 text-base bg-transparent text-gray-900 placeholder:text-gray-500"
+                        placeholder="Departure"
+                        value={searchParams.date}
+                        onChange={(e) => setSearchParams({...searchParams, date: e.target.value})}
+                    />
+                </div>
+
+            </form>
+
+            {/* Floating Explore Button */}
+            <div className="absolute left-1/2 -translate-x-1/2 -bottom-[26px]">
+                <Button 
+                    onClick={handleSearch}
+                    className="rounded-full px-8 py-6 h-auto text-base shadow-[0_1px_3px_0_rgba(60,64,67,0.3),0_4px_8px_3px_rgba(60,64,67,0.15)] font-medium bg-[#1a73e8] hover:bg-[#1557b0] text-white"
+                >
+                    <Search className="w-5 h-5 mr-3" />
+                    Explore
                 </Button>
-              </form>
-            </CardContent>
-          </Card>
+            </div>
         </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="grid gap-8 md:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <Plane className="h-8 w-8 text-primary mb-2" />
-              <CardTitle>Global Coverage</CardTitle>
-              <CardDescription>Major airlines connecting you to thousands of cities.</CardDescription>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Calendar className="h-8 w-8 text-primary mb-2" />
-              <CardTitle>Flexible Booking</CardTitle>
-              <CardDescription>Easy cancellation and modification policies.</CardDescription>
-            </CardHeader>
-          </Card>
-          <Card>
-            <CardHeader>
-              <Search className="h-8 w-8 text-primary mb-2" />
-              <CardTitle>Best Prices</CardTitle>
-              <CardDescription>Competitive rates and exclusive deals for members.</CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }
