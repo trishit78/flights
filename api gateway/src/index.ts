@@ -4,7 +4,7 @@ import apiRouter from './routers/index.js';
 import rateLimit from 'express-rate-limit';
 import * as proxy from 'http-proxy-middleware';
 import { authRequest } from './middleware/authRequest.middleware.js';
-
+import cors from 'cors';
 
 const app = express();
 const limiter = rateLimit({
@@ -12,7 +12,7 @@ const limiter = rateLimit({
 	max: 100, // Limit each IP to 10 requests per `window`
 });
 
-
+app.use(cors());
 
 app.use(limiter);
 

@@ -5,9 +5,10 @@ import v2Router from './routers/v2/index.router';
 import { appErrorHandler, genericErrorHandler } from './middlewares/error.middleware';
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
+import cors from 'cors';
 
 const app = express();
-
+app.use(cors())
 app.use(express.json());
 
 app.use(attachCorrelationIdMiddleware);

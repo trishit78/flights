@@ -13,7 +13,7 @@ import {BullMQAdapter} from '@bull-board/api/bullMQAdapter';
 import {ExpressAdapter} from '@bull-board/express';
 import { mailerQueue } from './queue/mailer.queue';
 import { attachUserContext } from './middlewares/context.middleware';
-
+import cors from 'cors';
 const app = express();
 
 const bullServerAdapter = new ExpressAdapter();
@@ -22,7 +22,7 @@ createBullBoard({
     queues:[new BullMQAdapter(mailerQueue)],
     serverAdapter:bullServerAdapter
 })
-
+app.use(cors())
 app.use(express.json());
 
 /**
