@@ -1,0 +1,62 @@
+'use client';
+
+import Link from 'next/link';
+import { Plane } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function Navbar() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check for token on mount
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsAuthenticated(!!token);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    router.push('/');
+    router.refresh();
+  };
+
+  return (
+    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <Link href="/" className="flex items-center space-x-2">
+          <Plane className="h-6 w-6 text-primary" />
+          <span className="font-bold text-xl">SkyBooker</span>
+        </Link>
+        
+        <div className="flex items-center space-x-6">
+          <Link href="/flights" className="text-sm font-medium transition-colors hover:text-primary">
+            Flights
+          </Link>
+          
+          {isAuthenticated ? (
+            <div className="flex items-center space-x-4">
+              <Button onClick={handleLogout} variant="ghost" size="sm">
+                Log out
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-4">
+              <Link href="/auth/signin">
+                <Button variant="ghost" size="sm">Sign In</Button>
+              </Link>
+              <Link href="/auth/signup">
+                <Button size="sm">Sign Up</Button>
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
+}
