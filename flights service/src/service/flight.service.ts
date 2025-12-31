@@ -1,4 +1,5 @@
 import { FlightDataDTO, UpdateFlightDTO } from "../DTO/Flight.DTO";
+import { searchFlightRequestCounter } from "../metrics/requestCounter";
 import {
   createFlightRepo,
   getAllFlightsRepo,
@@ -35,6 +36,15 @@ export const createFlightService = async (flightData: FlightDataDTO) => {
 
 export const getAllFlightsService = async (query: any) => {
   console.log(query)
+      const hasPrice = Boolean(query.price);
+  const hasDate = Boolean(query.tripdate);
+  const hasTrips = Boolean(query.trips);
+  
+      searchFlightRequestCounter.inc({
+        has_price:String(hasPrice),
+        has_date:String(hasDate),
+        has_trips:String(hasTrips)
+      })
   let customFilter: any = {};
   let sortFilter: any = [];
   if (query.trips) {
