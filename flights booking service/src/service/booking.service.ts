@@ -4,6 +4,7 @@ import { serverConfig } from "../config";
 import { bookingRepo, getBookingDetails, getOldBookingsRepo, updateBookingDetails } from "../repository/booking.repository";
 import { prisma } from "../prisma/client";
 import { addEmailToQueue } from "../producer/mailer.producer";
+import { bookingReservationExpiredTotal } from "../metrics/bookingMetric";
 
 
 
@@ -126,6 +127,7 @@ export const cancelOldBookings =async ()=>{
         });
             const bookingId = booking.id;
             
+            bookingReservationExpiredTotal.inc();
             await prisma.$transaction(async(tx)=>{
         return updateBookingDetails(tx,{bookingId,status:"CANCELLED"})
          });

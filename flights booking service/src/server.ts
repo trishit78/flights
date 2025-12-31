@@ -1,5 +1,5 @@
 /// <reference path="./types/express.d.ts" />
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { serverConfig } from './config';
 import v1Router from './routers/v1/index.router';
 import v2Router from './routers/v2/index.router';
@@ -14,6 +14,15 @@ import {ExpressAdapter} from '@bull-board/express';
 import { mailerQueue } from './queue/mailer.queue';
 import { attachUserContext } from './middlewares/context.middleware';
 import cors from 'cors';
+
+import client from 'prom-client';
+
+const register = new client.Registry();
+console.log(register)
+client.collectDefaultMetrics({
+    register:client.register
+})
+
 const app = express();
 
 const bullServerAdapter = new ExpressAdapter();
@@ -34,7 +43,11 @@ app.use(attachUserContext)
 app.use('/api/v1', v1Router);
 app.use('/api/v2', v2Router); 
 
-
+app.get('/metrics',async(req:Request,res:Response)=>{
+    res.setHeader('Content-Type',client.register.contentType);
+    const metric = await client.register.metrics()
+    res.send(metric)
+})
 /**
  * Add the error handler middleware
  */

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { createBookingService, makePaymentService } from "../service/booking.service";
+import { bookingAttemptsTotal, bookingFailedTotal, bookingSuccessTotal } from "../metrics/bookingMetric";
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -9,9 +10,10 @@ interface AuthenticatedRequest extends Request {
 }
 
 export const createBooking =  async(req:Request,res:Response)=>{
-
+  bookingAttemptsTotal.inc();
   const authReq = req as AuthenticatedRequest;
   if (!authReq.user) {
+    bookingFailedTotal.inc({ reason: "AUTH_FAILED" });
       res.status(401).json({
        success: false,
        message: 'Unauthorized'
@@ -25,7 +27,9 @@ export const createBooking =  async(req:Request,res:Response)=>{
   };
   
   const response = await createBookingService(bookingData);
-    res.status(StatusCodes.CREATED).json({
+    
+  bookingSuccessTotal.inc();
+  res.status(StatusCodes.CREATED).json({
         success:true,
         message:"Booking Initiated Successfully",
         data:response
