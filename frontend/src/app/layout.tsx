@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SkyBooker",
+  title: "Flights",
   description: "Book your flights easily",
 };
 

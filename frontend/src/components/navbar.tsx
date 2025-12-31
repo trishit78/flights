@@ -38,9 +38,7 @@ export default function Navbar() {
           <Link href="/flights" className="text-sm font-medium text-gray-600 transition-colors hover:text-blue-600">
             Explore
           </Link>
-          <Link href="#" className="text-sm font-medium text-gray-600 transition-colors hover:text-blue-600">
-             Trips
-          </Link>
+         
           
           {isAuthenticated ? (
             <div className="flex items-center space-x-4">
