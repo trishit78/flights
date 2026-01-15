@@ -2,6 +2,19 @@
 
 A comprehensive microservices-based application for booking flights, managing users, and sending notifications. This system is built using modern technologies with a focus on scalability, observability, and maintainability.
 
+# Demo
+
+
+https://github.com/user-attachments/assets/1d66f1cb-fe7d-46de-8e3c-d9f619f1b965
+
+
+
+
+
+
+
+
+
 ## 📋 Table of Contents
 
 - [Architecture](#-architecture)
